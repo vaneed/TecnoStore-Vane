@@ -21,9 +21,12 @@ public class MenuCelulares {
         String opcion;
 
         do {
-            System.out.println("--- TECNOSTORE ---");
+            System.out.println("\n--- TECNOSTORE ---");
             System.out.println("1. Registrar celular");
             System.out.println("2. Listar celulares");
+            System.out.println("3. Actualizar celular");
+            System.out.println("4. Eliminar celular");
+            System.out.println("5. Gestionar clientes");
             System.out.println("0. Salir");
             System.out.print("Elige una opción: ");
 
@@ -48,7 +51,67 @@ public class MenuCelulares {
                             }
                         }
                         break;
+case "3": {
+    System.out.print("ID del celular que deseas actualizar: ");
+    int idActualizar = Integer.parseInt(leerTexto(teclado));
 
+    if (idActualizar <= 0) {
+        throw new IllegalArgumentException(
+            "El ID debe ser mayor que cero."
+        );
+    }
+
+    System.out.println("Escribe todos los datos del celular:");
+
+    Celular celularActualizado = leerCelular(teclado);
+    celularActualizado.setId(idActualizar);
+
+    boolean actualizado = celularDAO.actualizar(celularActualizado);
+
+    if (actualizado) {
+        System.out.println("Celular actualizado.");
+    } else {
+        System.out.println(
+            "No se actualizó ninguna fila. Revisa que el ID exista."
+        );
+    }
+
+    break;
+}
+
+case "4": {
+    System.out.print("ID del celular que deseas eliminar: ");
+    int idEliminar = Integer.parseInt(leerTexto(teclado));
+
+    if (idEliminar <= 0) {
+        throw new IllegalArgumentException(
+            "El ID debe ser mayor que cero."
+        );
+    }
+
+    System.out.print("Escribe SI para confirmar: ");
+    String confirmacion = teclado.nextLine().trim();
+
+    if (confirmacion.equalsIgnoreCase("SI")) {
+
+        boolean eliminado = celularDAO.eliminar(idEliminar);
+
+        if (eliminado) {
+            System.out.println("Celular eliminado.");
+        } else {
+            System.out.println("No existe un celular con ese ID.");
+        }
+
+    } else {
+        System.out.println("Eliminación cancelada.");
+    }
+
+    break;
+    
+case "5": {
+    MenuClientes.ejecutar(conexion, teclado);
+    }
+    break;                  
                     case "0":
                         System.out.println("Hasta pronto.");
                         break;
@@ -61,10 +124,17 @@ public class MenuCelulares {
                 System.out.println("Dato incorrecto: " + error.getMessage());
 
             } catch (SQLException error) {
-                System.out.println(
-                    "Error de base de datos: " + error.getMessage()
-                );
-            }
+
+    if (error.getErrorCode() == 1451) {
+        System.out.println(
+            "No puedes eliminar este celular porque tiene ventas asociadas."
+        );
+    } else {
+        System.out.println(
+            "Error de base de datos: " + error.getMessage()
+        );
+    }
+}
 
         } while (!opcion.equals("0"));
     }

@@ -79,14 +79,51 @@ public class CelularDAO {
 
     private String convertirGama(Gama gama) {
         switch (gama) {
-            case ALTA:
+            case ALTA -> {
                 return "Alta";
-            case MEDIA:
+            }
+            case MEDIA -> {
                 return "Media";
-            case BAJA:
+            }
+            case BAJA -> {
                 return "Baja";
-            default:
-                throw new IllegalArgumentException("Gama no válida.");
+            }
+            default -> throw new IllegalArgumentException("Gama no válida.");
         }
     }
+public boolean actualizar(Celular celular) throws SQLException {
+
+    String sql = """
+        UPDATE celulares
+        SET marca = ?, modelo = ?, sistema_operativo = ?,
+            gama = ?, precio = ?, stock = ?
+        WHERE id = ?
+        """;
+
+    try (PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+
+        sentencia.setString(1, celular.getMarca());
+        sentencia.setString(2, celular.getModelo());
+        sentencia.setString(3, celular.getSistemaOperativo());
+        sentencia.setString(4, convertirGama(celular.getGama()));
+        sentencia.setBigDecimal(5, celular.getPrecio());
+        sentencia.setInt(6, celular.getStock());
+        sentencia.setInt(7, celular.getId());
+
+        return sentencia.executeUpdate() > 0;
+    }
 }
+
+public boolean eliminar(int id) throws SQLException {
+
+    String sql = "DELETE FROM celulares WHERE id = ?";
+
+    try (PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+
+        sentencia.setInt(1, id);
+
+        return sentencia.executeUpdate() > 0;
+    }
+}
+}
+
