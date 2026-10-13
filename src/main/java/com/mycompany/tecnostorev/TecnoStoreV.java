@@ -6,9 +6,7 @@ package com.mycompany.tecnostorev;
 
 import com.mycompany.persistencia.ConexionData;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Scanner;
 
 public class TecnoStoreV {
@@ -23,24 +21,16 @@ public class TecnoStoreV {
             System.out.print("Contraseña de MySQL: ");
             String clave = teclado.nextLine();
 
-            String consulta = "SELECT DATABASE()";
 
-            try (
-                Connection conexion = ConexionData.conectar(usuario, clave);
-                Statement sentencia = conexion.createStatement();
-                ResultSet resultado = sentencia.executeQuery(consulta)
-            ) {
+            try (Connection conexion = ConexionData.conectar(usuario, clave)) {
 
-                if (resultado.next()) {
-                    System.out.println("Conexión exitosa");
-                    System.out.println(
-                        "Base de datos: " + resultado.getString(1)
-                    );
-                }
+                System.out.println("Conexión exitosa");
+                MenuCelulares.ejecutar(conexion, teclado);
 
             } catch (SQLException error) {
+
                 System.out.println(
-                    "No se pudo conectar: " + error.getMessage()
+                    "No se pudo completar la operación: " + error.getMessage()
                 );
             }
         }
