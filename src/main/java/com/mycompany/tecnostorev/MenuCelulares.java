@@ -14,11 +14,18 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
+import com.mycompany.modelo.Venta;
+import com.mycompany.persistencia.VentaDAO;
+import com.mycompany.utilidades.ArchivoUtils;
+import java.io.IOException;
+import java.nio.file.Path;
+import com.mycompany.servicio.GestorCelulares;
 
 public class MenuCelulares {
     public static void ejecutar(Connection conexion, Scanner teclado) {
 
         CelularDAO celularDAO = new CelularDAO(conexion);
+            GestorCelulares gestorCelulares = new GestorCelulares(celularDAO);
         String opcion;
 
         do {
@@ -29,7 +36,7 @@ public class MenuCelulares {
             System.out.println("4. Eliminar celular");
             System.out.println("5. Gestionar clientes");
             System.out.println("6. Registrar venta");
-            System.out.println("7. Ver celulares con stock bajo");
+            System.out.println("7. Ver reportes y generar archivo");
             System.out.println("0. Salir");
             System.out.print("Elige una opción: ");
 
@@ -39,12 +46,12 @@ public class MenuCelulares {
                 switch (opcion) {
                     case "1":
                         Celular celular = leerCelular(teclado);
-                        celularDAO.registrar(celular);
+                        gestorCelulares.registrar(celular);
                         System.out.println("Celular registrado.");
                         break;
 
                     case "2":
-                        List<Celular> celulares = celularDAO.listar();
+                        List<Celular> celulares = gestorCelulares.listar();
 
                         if (celulares.isEmpty()) {
                             System.out.println("No hay celulares registrados.");
@@ -56,20 +63,14 @@ public class MenuCelulares {
                         break;
 case "3": {
     System.out.print("ID del celular que deseas actualizar: ");
-    int idActualizar = Integer.parseInt(leerTexto(teclado));
-
-    if (idActualizar <= 0) {
-        throw new IllegalArgumentException(
-            "El ID debe ser mayor que cero."
-        );
-    }
+    int idActualizar = Integer.parseInt(leerTexto(teclado));    
 
     System.out.println("Escribe todos los datos del celular:");
 
     Celular celularActualizado = leerCelular(teclado);
     celularActualizado.setId(idActualizar);
 
-    boolean actualizado = celularDAO.actualizar(celularActualizado);
+    boolean actualizado = gestorCelulares.actualizar(celularActualizado);
 
     if (actualizado) {
         System.out.println("Celular actualizado.");
@@ -86,18 +87,12 @@ case "4": {
     System.out.print("ID del celular que deseas eliminar: ");
     int idEliminar = Integer.parseInt(leerTexto(teclado));
 
-    if (idEliminar <= 0) {
-        throw new IllegalArgumentException(
-            "El ID debe ser mayor que cero."
-        );
-    }
-
     System.out.print("Escribe SI para confirmar: ");
     String confirmacion = teclado.nextLine().trim();
 
     if (confirmacion.equalsIgnoreCase("SI")) {
 
-        boolean eliminado = celularDAO.eliminar(idEliminar);
+        boolean eliminado = gestorCelulares.eliminar(idEliminar);
 
         if (eliminado) {
             System.out.println("Celular eliminado.");
@@ -123,13 +118,31 @@ case "5": {
     }
     
     case "7": {
-    String reporte = ReporteUtils.generarStockBajo(
-        celularDAO.listar()
-    );
+
+    VentaDAO ventaDAO = new VentaDAO(conexion);
+    List<Venta> ventas = ventaDAO.listar();
+
+    String reporte =
+            ReporteUtils.generarStockBajo(gestorCelulares.listar())
+            + "\n" + ReporteUtils.generarTopTres(ventas)
+            + "\n" + ReporteUtils.generarVentasPorMes(ventas)
+            + "\n" + ReporteUtils.generarResumenVentas(ventas);
 
     System.out.println(reporte);
+
+    try {
+        Path ruta = ArchivoUtils.guardarReporte(reporte);
+        System.out.println("Archivo guardado en: " + ruta);
+
+    } catch (IOException error) {
+        System.out.println(
+            "El reporte se mostró, pero no se pudo guardar el archivo: "
+            + error.getMessage()
+        );
+    }
+
     break;
-}
+    }
     
                     case "0":
                         System.out.println("Hasta pronto.");
