@@ -4,6 +4,7 @@
  */
 package com.mycompany.tecnostorev;
 
+import com.mycompany.utilidades.ReporteUtils;
 import com.mycompany.modelo.Celular;
 import com.mycompany.modelo.Gama;
 import com.mycompany.persistencia.CelularDAO;
@@ -27,6 +28,8 @@ public class MenuCelulares {
             System.out.println("3. Actualizar celular");
             System.out.println("4. Eliminar celular");
             System.out.println("5. Gestionar clientes");
+            System.out.println("6. Registrar venta");
+            System.out.println("7. Ver celulares con stock bajo");
             System.out.println("0. Salir");
             System.out.print("Elige una opción: ");
 
@@ -107,11 +110,27 @@ case "4": {
     }
 
     break;
+}
     
 case "5": {
     MenuClientes.ejecutar(conexion, teclado);
     }
-    break;                  
+    break;
+
+    case "6":{
+    MenuVentas.ejecutar(conexion, teclado);
+    break;
+    }
+    
+    case "7": {
+    String reporte = ReporteUtils.generarStockBajo(
+        celularDAO.listar()
+    );
+
+    System.out.println(reporte);
+    break;
+}
+    
                     case "0":
                         System.out.println("Hasta pronto.");
                         break;
