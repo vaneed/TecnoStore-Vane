@@ -4,34 +4,24 @@
  */
 package com.mycompany.modelo;
 
+public class Cliente extends Persona {
 
-public class Cliente {
     private final int id;
-    private final String nombre;
-    private final String identificacion;
     private final String correo;
     private final String telefono;
 
     public Cliente(int id, String nombre, String identificacion,
                    String correo, String telefono) {
 
+        super(nombre, identificacion);
+
         this.id = id;
-        this.nombre = nombre;
-        this.identificacion = identificacion;
         this.correo = correo;
         this.telefono = telefono;
     }
 
     public int getId() {
         return id;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public String getIdentificacion() {
-        return identificacion;
     }
 
     public String getCorreo() {
@@ -44,8 +34,8 @@ public class Cliente {
 
     @Override
     public String toString() {
-        return id + " | " + nombre
-                + " | Identificación: " + identificacion
+        return id + " | " + getNombre()
+                + " | Identificación: " + getIdentificacion()
                 + " | Correo: " + correo
                 + " | Teléfono: " + telefono;
     }

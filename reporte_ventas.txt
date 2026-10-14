@@ -1,0 +1,14 @@
+CELULARES CON STOCK BAJO
+ID: 3 | Apple Iphone 15 | Stock: 2
+
+TOP 3 DE CELULARES MÁS VENDIDOS
+ID: 3 | Apple Iphone 15 | Unidades: 1
+
+VENTAS POR MES — INCLUYEN IVA
+2026-10 | Total: $2142000.00
+
+RESUMEN DE TODAS LAS VENTAS
+
+Venta: 1 | Cliente: vane | Fecha: 2026-10-14 11:59
+  Apple Iphone 15 | Cantidad: 1 | Subtotal: $1800000.00
+Subtotal: $1800000.00 | IVA: $342000.00 | Total: $2142000.00

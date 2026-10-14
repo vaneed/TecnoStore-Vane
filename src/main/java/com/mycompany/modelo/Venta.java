@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import com.mycompany.patron.Iva19;
 
 public class Venta {
     private int id;
@@ -17,6 +18,7 @@ public class Venta {
     private final LocalDateTime fecha;
     private final List<ItemVenta> items;
     private final EstrategiaImpuesto estrategiaImpuesto;
+    private BigDecimal totalGuardado;
 
     public Venta(Cliente cliente, EstrategiaImpuesto estrategiaImpuesto) {
 
@@ -37,6 +39,18 @@ public class Venta {
         this.fecha = LocalDateTime.now();
         this.items = new ArrayList<>();
     }
+    
+    public Venta(int id, Cliente cliente,
+             LocalDateTime fecha, BigDecimal totalGuardado) {
+
+    this.id = id;
+    this.cliente = cliente;
+    this.fecha = fecha;
+    this.totalGuardado = totalGuardado;
+    this.items = new ArrayList<>();
+    this.estrategiaImpuesto = new Iva19();
+    }
+    
 
     public void agregarItem(ItemVenta item) {
 
@@ -72,12 +86,22 @@ public class Venta {
     }
 
     public BigDecimal calcularIva() {
-        return estrategiaImpuesto.calcular(calcularSubtotal());
+
+    if (totalGuardado != null) {
+        return totalGuardado.subtract(calcularSubtotal());
+    }
+
+    return estrategiaImpuesto.calcular(calcularSubtotal());
     }
 
     public BigDecimal calcularTotal() {
-        return calcularSubtotal().add(calcularIva());
+
+    if (totalGuardado != null) {
+        return totalGuardado;
     }
+
+    return calcularSubtotal().add(calcularIva());
+}
 
     public int getId() {
         return id;

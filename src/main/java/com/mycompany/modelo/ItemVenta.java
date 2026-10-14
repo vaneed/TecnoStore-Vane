@@ -11,6 +11,7 @@ public class ItemVenta {
     private final Celular celular;
     private final int cantidad;
     private final BigDecimal precioUnitario;
+    private final BigDecimal subtotal;
 
     public ItemVenta(Celular celular, int cantidad) {
 
@@ -37,6 +38,9 @@ public class ItemVenta {
 
         this.precioUnitario = celular.getPrecio()
                 .setScale(2, RoundingMode.HALF_UP);
+        
+        this.subtotal = this.precioUnitario.multiply(
+      BigDecimal.valueOf(cantidad));
     }
 
     public Celular getCelular() {
@@ -52,8 +56,26 @@ public class ItemVenta {
     }
 
     public BigDecimal calcularSubtotal() {
-        return precioUnitario.multiply(
-            BigDecimal.valueOf(cantidad)
+    return subtotal;
+    }
+    
+    public ItemVenta(Celular celular, int cantidad, BigDecimal subtotal) {
+
+    if (celular == null || cantidad <= 0
+            || subtotal == null || subtotal.signum() <= 0) {
+        throw new IllegalArgumentException(
+            "El detalle guardado tiene datos incorrectos."
         );
     }
+
+    this.celular = celular;
+    this.cantidad = cantidad;
+    this.subtotal = subtotal;
+
+    this.precioUnitario = subtotal.divide(
+        BigDecimal.valueOf(cantidad),
+        2,
+        RoundingMode.HALF_UP
+    );
+}
 }
