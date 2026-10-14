@@ -21,7 +21,8 @@ clientes, ventas e inventario. Los datos se guardan en MySQL mediante JDBC.
 
 ## Capturas 📸
 <img width="1774" height="494" alt="Captura desde 2026-10-14 12-25-03" src="https://github.com/user-attachments/assets/e4c8f98e-3827-4f14-a916-56de3fda0f9a" />
-<img width="1688" height="791" alt="image" src="https://github.com/user-attachments/assets/c28c3205-2743-4715-a118-7b1bcce85c28" />
+<img width="1727" height="927" alt="image" src="https://github.com/user-attachments/assets/fdb2578b-54f4-4ced-ab53-50fdd603a02c" />
+
 
 
 ## Preparar la base de datos
